@@ -14,12 +14,17 @@ AARPGCharacter::AARPGCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->TargetArmLength = 300.f;
 
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(CameraBoom);
+	ViewCamera->bUsePawnControlRotation = true;
 
 }
 
@@ -39,12 +44,24 @@ void AARPGCharacter::BeginPlay()
 
 void AARPGCharacter::Move(const FInputActionValue& Value)
 {
+
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
 	const FVector Forward = GetActorForwardVector();
 	AddMovementInput(Forward, MovementVector.Y);
 	const FVector Right = GetActorRightVector();
 	AddMovementInput(Right, MovementVector.X);
+}
+
+void AARPGCharacter::Look(const FInputActionValue& Value)
+{
+	const FVector2D LookAxisVector = Value.Get<FVector2D>();
+
+	if (GetController()) {
+		AddControllerYawInput(LookAxisVector.X);
+		AddControllerPitchInput(LookAxisVector.Y);
+	}
+
 }
 
 
@@ -61,6 +78,7 @@ void AARPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Look);
 	}
 
 }
