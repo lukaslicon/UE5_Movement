@@ -4,7 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
+
 #include "ARPGCharacter.generated.h"
+
+
+
+class UInputMappingContext;
+class UInputAction;
+class USpringArmComponent;
+class UCameraComponent;
 
 UCLASS()
 class ARPG_MOVEMENT_API AARPGCharacter : public ACharacter
@@ -18,7 +27,23 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputMappingContext* CharacterContext;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* MovementAction;
+
+	void Move(const FInputActionValue& Value);
+
+private:
+
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* ViewCamera;
+
 
 };
