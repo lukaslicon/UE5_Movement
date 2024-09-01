@@ -23,5 +23,6 @@ void UARPGAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	if (ARPGCharacterMovement)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(ARPGCharacterMovement->Velocity);
+		isFalling = ARPGCharacterMovement->IsFalling();
 	}
 }

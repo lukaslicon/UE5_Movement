@@ -72,6 +72,12 @@ void AARPGCharacter::Look(const FInputActionValue& Value)
 
 }
 
+void AARPGCharacter::Jump()
+{
+	Super::Jump();
+}
+
+
 
 void AARPGCharacter::Tick(float DeltaTime)
 {
@@ -87,7 +93,8 @@ void AARPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	{
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Look);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Jump);
 	}
-
 }
+
 
