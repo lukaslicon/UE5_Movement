@@ -2,7 +2,6 @@
 
 #include "Items/Item.h"
 #include "Components/SphereComponent.h"
-#include "Characters/ARPGCharacter.h"
 
 // Sets default values
 AItem::AItem()
@@ -39,21 +38,13 @@ float AItem::TransformedCos()
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	const FString OtherActorName = OtherActor->GetName();
-	AARPGCharacter* ARPGCharacter = Cast<AARPGCharacter>(OtherActor);
-	if (ARPGCharacter)
-	{
-		ARPGCharacter->SetOverlappingItem(this);
-	}
+	UE_LOG(LogTemp, Log, TEXT("Sphere Start Overlap with %s"), *OtherActorName);
 }
 
 void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	const FString OtherActorName = OtherActor->GetName();
-	AARPGCharacter* ARPGCharacter = Cast<AARPGCharacter>(OtherActor);
-	if (ARPGCharacter)
-	{
-		ARPGCharacter->SetOverlappingItem(nullptr);
-	}
+	UE_LOG(LogTemp, Log, TEXT("Sphere End Overlap with %s"), *OtherActorName);
 }
 
 // Called every frame
@@ -61,4 +52,6 @@ void AItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	RunningTime += DeltaTime;
+
+
 }
