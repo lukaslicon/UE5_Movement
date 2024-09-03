@@ -10,8 +10,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Items/Item.h"
-#include "Items/Weapons/Weapon.h"
 
 AARPGCharacter::AARPGCharacter()
 {
@@ -74,17 +72,6 @@ void AARPGCharacter::Look(const FInputActionValue& Value)
 
 }
 
-void AARPGCharacter::EKeyPressed()
-{
-	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
-	if (OverlappingWeapon) 
-	{
-		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
-		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
-	}
-}
-
-
 void AARPGCharacter::Jump()
 {
 	Super::Jump();
@@ -107,7 +94,6 @@ void AARPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Jump);
-		EnhancedInputComponent->BindAction(EKeyAction, ETriggerEvent::Triggered, this, &AARPGCharacter::EKeyPressed);
 	}
 }
 
