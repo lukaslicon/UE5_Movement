@@ -87,12 +87,18 @@ void AARPGCharacter::EKeyPressed()
 
 void AARPGCharacter::LightAttack()
 {
-	if (ActionState == EActionState::EAS_Unoccupied)
+	if (CanAttack())
 	{
 		PlayAttackMontage();
 		ActionState = EActionState::EAS_Attacking;
 	}
 	
+}
+
+bool AARPGCharacter::CanAttack()
+{
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState != ECharacterState::ECS_Unequipped;;
 }
 
 void AARPGCharacter::PlayAttackMontage()
@@ -118,6 +124,13 @@ void AARPGCharacter::PlayAttackMontage()
 		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 	}
 }
+
+void AARPGCharacter::AttackEnd()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+
 
 void AARPGCharacter::Jump()
 {

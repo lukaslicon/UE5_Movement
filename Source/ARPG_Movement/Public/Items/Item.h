@@ -8,6 +8,12 @@
 
 class USphereComponent;
 
+enum class EItemState : uint8
+{
+	EIS_Hovering,
+	EIS_Equipped
+};
+
 UCLASS()
 class ARPG_MOVEMENT_API AItem : public AActor
 {
@@ -43,6 +49,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* ItemMesh;
+
+	EItemState ItemState = EItemState::EIS_Hovering;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float RunningTime;
