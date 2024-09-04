@@ -16,6 +16,7 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 class AItem;
+class UAnimMontage;
 
 
 UCLASS()
@@ -48,12 +49,28 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* EquipActionMapping;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* LightAttackAction;
+
+	/**
+	* Callback for Input
+	*/
+
+
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void EKeyPressed();
+	void LightAttack();
+
+	/**
+	* Play Montage functions
+	*/
+
+	void PlayAttackMontage();
 
 private:
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;
@@ -63,6 +80,12 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
+
+	/**
+	* Animation Montages
+	*/
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* AttackMontage;
 
 public: 
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }

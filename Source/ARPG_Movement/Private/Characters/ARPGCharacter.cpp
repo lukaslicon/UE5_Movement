@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
+#include "Animation/AnimMontage.h"
 
 AARPGCharacter::AARPGCharacter()
 {
@@ -84,6 +85,40 @@ void AARPGCharacter::EKeyPressed()
 	}
 }
 
+void AARPGCharacter::LightAttack()
+{
+	if (ActionState == EActionState::EAS_Unoccupied)
+	{
+		PlayAttackMontage();
+		ActionState = EActionState::EAS_Attacking;
+	}
+	
+}
+
+void AARPGCharacter::PlayAttackMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && AttackMontage)
+	{
+		AnimInstance->Montage_Play(AttackMontage);
+		int32 Selection = FMath::RandRange(0, 1);
+		FName SectionName = FName();
+
+		switch (Selection)
+		{
+		case 0:
+			SectionName = FName("Attack1");
+			break;
+		case 1:
+			SectionName = FName("Attack2");
+			break;
+		default:
+			break;
+		}
+		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+	}
+}
+
 void AARPGCharacter::Jump()
 {
 	Super::Jump();
@@ -107,6 +142,7 @@ void AARPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Jump);
 		EnhancedInputComponent->BindAction(EquipActionMapping, ETriggerEvent::Triggered, this, &AARPGCharacter::EKeyPressed);
+		EnhancedInputComponent->BindAction(LightAttackAction, ETriggerEvent::Triggered, this, &AARPGCharacter::LightAttack);
 	}
 }
 
