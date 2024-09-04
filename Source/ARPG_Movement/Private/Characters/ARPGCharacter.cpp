@@ -52,7 +52,7 @@ void AARPGCharacter::BeginPlay()
 
 void AARPGCharacter::Move(const FInputActionValue& Value)
 {
-	if (ActionState == EActionState::EAS_Attacking) return;
+	if (ActionState != EActionState::EAS_Unoccupied) return;
 		const FVector2D MovementVector = Value.Get<FVector2D>();
 
 		const FRotator Rotation = GetControlRotation();
@@ -81,7 +81,32 @@ void AARPGCharacter::EKeyPressed()
 	if (OverlappingWeapon) 
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon; 
+		OverlappingItem = nullptr;
+		EquippedWeapon = OverlappingWeapon;
+	}
+}
+
+
+void AARPGCharacter::EquipKeyPressed()
+{
+	if (CanUnEquip())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UnEquipping weapon"));
+		PlayEquipMontage(FName("Unequip"));
+		CharacterState = ECharacterState::ECS_Unequipped;
+		ActionState = EActionState::EAS_EquippingWeapon;
+	}
+	else if (CanEquip())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Equipping weapon"));
+		PlayEquipMontage(FName("Equip"));
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+		ActionState = EActionState::EAS_EquippingWeapon;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot Equip or Unequip"));
 	}
 }
 
@@ -98,8 +123,40 @@ void AARPGCharacter::LightAttack()
 bool AARPGCharacter::CanAttack()
 {
 	return ActionState == EActionState::EAS_Unoccupied &&
-		CharacterState != ECharacterState::ECS_Unequipped;;
+		CharacterState != ECharacterState::ECS_Unequipped;
 }
+
+
+
+bool AARPGCharacter::CanUnEquip()
+{
+	return ActionState == EActionState::EAS_Unoccupied
+		&& CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+bool AARPGCharacter::CanEquip()
+{
+	return ActionState == EActionState::EAS_Unoccupied
+		&& CharacterState == ECharacterState::ECS_Unequipped 
+		&& EquippedWeapon;
+}
+
+void AARPGCharacter::Unequip()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+	}
+}
+
+void AARPGCharacter::Equip()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+	}
+}
+
 
 void AARPGCharacter::PlayAttackMontage()
 {
@@ -125,12 +182,27 @@ void AARPGCharacter::PlayAttackMontage()
 	}
 }
 
+void AARPGCharacter::PlayEquipMontage(FName SectionName)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && EquipMontage)
+	{
+		// Play the montage and jump to the specific section (Equip/Unequip)
+		AnimInstance->Montage_Play(EquipMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
+	}
+}
+
+
 void AARPGCharacter::AttackEnd()
 {
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
-
+void AARPGCharacter::FinishEquiping()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
 
 void AARPGCharacter::Jump()
 {
@@ -154,8 +226,9 @@ void AARPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Jump);
-		EnhancedInputComponent->BindAction(EquipActionMapping, ETriggerEvent::Triggered, this, &AARPGCharacter::EKeyPressed);
+		EnhancedInputComponent->BindAction(EActionMapping, ETriggerEvent::Triggered, this, &AARPGCharacter::EKeyPressed);
 		EnhancedInputComponent->BindAction(LightAttackAction, ETriggerEvent::Triggered, this, &AARPGCharacter::LightAttack);
+		EnhancedInputComponent->BindAction(EquipActionMapping, ETriggerEvent::Triggered, this, &AARPGCharacter::EquipKeyPressed);
 	}
 }
 

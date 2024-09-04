@@ -17,6 +17,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
+class AWeapon;
 
 
 UCLASS()
@@ -47,6 +48,9 @@ protected:
 	UInputAction* JumpAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* EActionMapping;
+
+	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* EquipActionMapping;
 
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -60,6 +64,7 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void EKeyPressed();
+	void EquipKeyPressed();
 	void LightAttack();
 
 	/**
@@ -71,6 +76,21 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 	bool CanAttack();
+
+	void PlayEquipMontage(FName SectionName);
+	bool CanUnEquip();
+	bool CanEquip();
+
+	UFUNCTION(BlueprintCallable)
+	void Unequip();
+
+	UFUNCTION(BlueprintCallable)
+	void Equip();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquiping();
+
+
 
 private:
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
@@ -87,11 +107,17 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AWeapon* EquippedWeapon;
+
 	/**
 	* Animation Montages
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* EquipMontage;
 
 public: 
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
