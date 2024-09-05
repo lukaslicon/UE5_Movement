@@ -56,6 +56,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* LightAttackAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* HeavyAttackAction;
+
 	/**
 	* Callback for Input
 	*/
@@ -66,12 +69,14 @@ protected:
 	void EKeyPressed();
 	void EquipKeyPressed();
 	void LightAttack();
+	void HeavyAttack();
 
 	/**
 	* Play Montage functions
 	*/
 
-	void PlayAttackMontage();
+	void PlayLightAttackMontage();
+	void PlayHeavyAttackMontage();
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
@@ -115,6 +120,9 @@ private:
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* HeavyAttackMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;

@@ -114,10 +114,19 @@ void AARPGCharacter::LightAttack()
 {
 	if (CanAttack())
 	{
-		PlayAttackMontage();
+		PlayLightAttackMontage();
 		ActionState = EActionState::EAS_Attacking;
 	}
 	
+}
+
+void AARPGCharacter::HeavyAttack()
+{
+	if (CanAttack())
+	{
+		PlayHeavyAttackMontage();
+		ActionState = EActionState::EAS_Attacking;
+	}
 }
 
 bool AARPGCharacter::CanAttack()
@@ -158,7 +167,7 @@ void AARPGCharacter::Equip()
 }
 
 
-void AARPGCharacter::PlayAttackMontage()
+void AARPGCharacter::PlayLightAttackMontage()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && AttackMontage)
@@ -182,6 +191,30 @@ void AARPGCharacter::PlayAttackMontage()
 			break;
 		}
 		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+	}
+}
+
+void AARPGCharacter::PlayHeavyAttackMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && HeavyAttackMontage)
+	{
+		AnimInstance->Montage_Play(HeavyAttackMontage);
+		int32 Selection = FMath::RandRange(0, 1);
+		FName SectionName = FName();
+
+		switch (Selection)
+		{
+		case 0:
+			SectionName = FName("Attack1");
+			break;
+		case 1:
+			SectionName = FName("Attack2");
+			break;
+		default:
+			break;
+		}
+		AnimInstance->Montage_JumpToSection(SectionName, HeavyAttackMontage);
 	}
 }
 
@@ -231,6 +264,7 @@ void AARPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AARPGCharacter::Jump);
 		EnhancedInputComponent->BindAction(EActionMapping, ETriggerEvent::Triggered, this, &AARPGCharacter::EKeyPressed);
 		EnhancedInputComponent->BindAction(LightAttackAction, ETriggerEvent::Triggered, this, &AARPGCharacter::LightAttack);
+		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &AARPGCharacter::HeavyAttack);
 		EnhancedInputComponent->BindAction(EquipActionMapping, ETriggerEvent::Triggered, this, &AARPGCharacter::EquipKeyPressed);
 	}
 }
