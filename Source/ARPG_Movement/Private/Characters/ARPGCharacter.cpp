@@ -164,7 +164,7 @@ void AARPGCharacter::PlayAttackMontage()
 	if (AnimInstance && AttackMontage)
 	{
 		AnimInstance->Montage_Play(AttackMontage);
-		int32 Selection = FMath::RandRange(0, 1);
+		int32 Selection = FMath::RandRange(0, 2);
 		FName SectionName = FName();
 
 		switch (Selection)
@@ -174,6 +174,9 @@ void AARPGCharacter::PlayAttackMontage()
 			break;
 		case 1:
 			SectionName = FName("Attack2");
+			break;
+		case 2:
+			SectionName = FName("Attack3");
 			break;
 		default:
 			break;
