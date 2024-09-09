@@ -13,6 +13,7 @@
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
+#include "Components/BoxComponent.h"
 
 AARPGCharacter::AARPGCharacter()
 {
@@ -243,6 +244,14 @@ void AARPGCharacter::FinishEquiping()
 void AARPGCharacter::Jump()
 {
 	Super::Jump();
+}
+
+void AARPGCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
+{
+	if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) 
+	{
+		EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
+	}
 }
 
 
