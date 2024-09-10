@@ -243,6 +243,7 @@ void AARPGCharacter::FinishEquiping()
 
 void AARPGCharacter::Jump()
 {
+	if (ActionState != EActionState::EAS_Unoccupied) return;
 	Super::Jump();
 }
 
