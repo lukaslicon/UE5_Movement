@@ -8,6 +8,8 @@
 #include "Enemy.generated.h"
 
 class UAnimMontage;
+class UAttributeComponent;
+class UWidgetComponent;
 
 UCLASS()
 class ARPG_MOVEMENT_API AEnemy : public ACharacter, public IHitInterface
@@ -33,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
 	UParticleSystem* HitParticles;
 
+
+
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -42,7 +47,14 @@ protected:
 	*/
 	void PlayHitReactMontage(const FName& SectionName);
 
-public:	
+private: 
+
+	UPROPERTY(VisibleAnywhere)
+	UAttributeComponent* Attributes;
+
+	UPROPERTY(VisibleAnywhere)
+	UWidgetComponent* HealthBarWidget;
+
 
 
 };
