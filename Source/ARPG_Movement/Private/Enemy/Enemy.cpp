@@ -47,24 +47,31 @@ void AEnemy::Die()
 		{
 		case 0:
 			SectionName = FName("Death1");
+			DeathPose = EDeathPose::EDP_Death1;
 			break;
 		case 1:
 			SectionName = FName("Death2");
+			DeathPose = EDeathPose::EDP_Death2;
 			break;
 		case 2:
 			SectionName = FName("Death3");
+			DeathPose = EDeathPose::EDP_Death3;
 			break;
 		case 3:
 			SectionName = FName("Death4");
+			DeathPose = EDeathPose::EDP_Death4;
 			break;
 		case 4:
 			SectionName = FName("Death5");
+			DeathPose = EDeathPose::EDP_Death5;
 			break;
 		case 5:
 			SectionName = FName("Death6");
+			DeathPose = EDeathPose::EDP_Death6;
 			break;
 		case 6:
 			SectionName = FName("Death7");
+			DeathPose = EDeathPose::EDP_Death7;
 			break;
 		default:
 			break;
@@ -102,7 +109,7 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	//Debug
 	//DRAW_SPHERE_COLOR(ImpactPoint, FColor::Blue);
 
-	if (Attributes && Attributes->IsAlive()) 
+	if (Attributes && Attributes->IsAlive())
 	{
 		DirectionalHitReact(ImpactPoint);
 	}
@@ -110,8 +117,6 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	{
 		Die();
 	}
-
-	DirectionalHitReact(ImpactPoint);
 	if (HitSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
@@ -167,6 +172,7 @@ void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
 	}
 
 	PlayHitReactMontage(Section);
+
 	
 	/** //debug
 	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
