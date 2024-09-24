@@ -8,7 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AttributeComponent.h"
-#include "Components/WidgetComponent.h"
+#include "HUD/HealthBarComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -25,14 +25,52 @@ AEnemy::AEnemy()
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
 
 	//health bars
-	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 }
 
 void AEnemy::BeginPlay()
 {
-	Super::BeginPlay();
-	
+	Super::BeginPlay();	
+	HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());
+}
+
+void AEnemy::Die()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && DeathMontage)
+	{
+		AnimInstance->Montage_Play(DeathMontage);
+		const int32 Selection = FMath::RandRange(0, 6);
+		FName SectionName = FName();
+		switch (Selection)
+		{
+		case 0:
+			SectionName = FName("Death1");
+			break;
+		case 1:
+			SectionName = FName("Death2");
+			break;
+		case 2:
+			SectionName = FName("Death3");
+			break;
+		case 3:
+			SectionName = FName("Death4");
+			break;
+		case 4:
+			SectionName = FName("Death5");
+			break;
+		case 5:
+			SectionName = FName("Death6");
+			break;
+		case 6:
+			SectionName = FName("Death7");
+			break;
+		default:
+			break;
+		}
+		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
+	}
 }
 
 
@@ -63,6 +101,16 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 {
 	//Debug
 	//DRAW_SPHERE_COLOR(ImpactPoint, FColor::Blue);
+
+	if (Attributes && Attributes->IsAlive()) 
+	{
+		DirectionalHitReact(ImpactPoint);
+	}
+	else
+	{
+		Die();
+	}
+
 	DirectionalHitReact(ImpactPoint);
 	if (HitSound)
 	{
@@ -131,6 +179,17 @@ void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
 	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward*60.f, 5.f, FColor::Red, 5.f);
 	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
 	*/
+}
+
+float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+
+	if (Attributes && HealthBarWidget)
+	{
+		Attributes->ReceiveDamage(DamageAmount);
+		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());
+	}
+	return DamageAmount;
 }
 
 
