@@ -104,6 +104,21 @@ void AEnemy::PlayHitReactMontage(const FName& SectionName)
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (CombatTarget)
+	{
+		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();
+		if (DistanceToTarget > CombatRadius)
+		{
+			CombatTarget = nullptr;
+			if (HealthBarWidget) {
+				HealthBarWidget->SetVisibility(false);
+			}
+		}
+		if (DistanceToTarget <= CombatRadius)
+		{
+			HealthBarWidget->SetVisibility(true);
+		}
+	}
 
 }
 
