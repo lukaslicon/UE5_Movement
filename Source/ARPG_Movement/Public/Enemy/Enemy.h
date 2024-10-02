@@ -7,6 +7,7 @@
 #include "Interfaces/HitInterface.h"
 #include "Characters/CharacterTypes.h"
 
+
 #include "Enemy.generated.h"
 
 
@@ -49,6 +50,20 @@ public:
 	double CombatRadius = 750.f;
 
 
+
+	/**
+	* Navigation
+	*/
+
+	UPROPERTY()
+	class AAIController* EnemyController;
+
+	// Current patrol target
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	AActor* PatrolTarget;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	TArray<AActor*> PatrolTargets;
 
 protected:
 
