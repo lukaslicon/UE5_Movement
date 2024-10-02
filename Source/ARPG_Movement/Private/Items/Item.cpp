@@ -58,8 +58,13 @@ void AItem::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	RunningTime += DeltaTime;
 
+	//we are going to continue using hovering state but instead that is the state of the item when it is on the weapon rack
+	/*
 	if (ItemState == EItemState::EIS_Hovering) {
 		AddActorWorldOffset(FVector(0.f, 0.f, TransformedSin()));
 	}
+	*/
+
+
 
 }
