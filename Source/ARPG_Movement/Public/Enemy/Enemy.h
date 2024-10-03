@@ -87,6 +87,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	double PatrolRadius = 200.f;
 
+	UPROPERTY(EditAnywhere)
+	double ChasingSpeed = 300.f;
+
 	FTimerHandle PatrolTimer;
 	void PatrolTimerFinished();
 
@@ -95,6 +98,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
+
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 
 protected:
 	virtual void BeginPlay() override;

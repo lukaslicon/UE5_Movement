@@ -42,6 +42,8 @@ void AARPGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Tags.Add(FName("Character"));
+
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem <UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
