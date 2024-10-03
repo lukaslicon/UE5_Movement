@@ -10,6 +10,7 @@
 #include "HUD/HealthBarComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "AIController.h"
+#include "Perception/PawnSensingComponent.h"
 
 AEnemy::AEnemy()
 {
@@ -29,6 +30,11 @@ AEnemy::AEnemy()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+
+	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensing->SetPeripheralVisionAngle(50.f);
+	PawnSensing->SightRadius = 1500.f;
+	
 }
 
 void AEnemy::PatrolTimerFinished()
@@ -46,6 +52,11 @@ void AEnemy::BeginPlay()
 
 	EnemyController = Cast<AAIController>(GetController());
 	MoveToTarget(PatrolTarget);
+
+	if (PawnSensing)
+	{
+		PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
+	}
 }
 
 void AEnemy::Die()
@@ -134,6 +145,11 @@ AActor* AEnemy::ChoosePatrolTarget()
 		return ValidTargets[TargetSelection];
 	}
 	return nullptr;
+}
+
+void AEnemy::PawnSeen(APawn* SeenPawn)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Pawn Seen by Enemy!"));
 }
 
 void AEnemy::PlayHitReactMontage(const FName& SectionName)

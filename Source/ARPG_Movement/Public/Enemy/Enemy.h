@@ -14,7 +14,7 @@
 class UAnimMontage;
 class UAttributeComponent;
 class UHealthBarComponent;
-
+class UPawnSensingComponent;
 
 UCLASS()
 class ARPG_MOVEMENT_API AEnemy : public ACharacter, public IHitInterface
@@ -34,11 +34,20 @@ public:
 
 private:
 
+
+	/*
+	* Components 
+	*/
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UAttributeComponent* Attributes;
 
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;
+
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent* PawnSensing;
 
 	/**
 	* Animation montages
@@ -69,7 +78,7 @@ private:
 	class AAIController* EnemyController;
 
 	// Current patrol target
-	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	AActor* PatrolTarget;
 
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
@@ -94,6 +103,9 @@ protected:
 	bool InTargetRange(AActor* Target, double Radius);
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
+
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);
 
 	/**
 	* Play montage functions
