@@ -32,8 +32,8 @@ AEnemy::AEnemy()
 	bUseControllerRotationRoll = false;
 
 	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
-	PawnSensing->SetPeripheralVisionAngle(50.f);
-	PawnSensing->SightRadius = 1500.f;
+	PawnSensing->SetPeripheralVisionAngle(60.f);
+	PawnSensing->SightRadius = 2500.f;
 	
 }
 
@@ -152,12 +152,16 @@ void AEnemy::PawnSeen(APawn* SeenPawn)
 	if (EnemyState == EEnemyState::EES_Chasing) return;
 	if (SeenPawn->ActorHasTag(FName("Character")))
 	{
-		EnemyState = EEnemyState::EES_Chasing;
 		GetWorldTimerManager().ClearTimer(PatrolTimer);
 		GetCharacterMovement()->MaxWalkSpeed = ChasingSpeed;
 		CombatTarget = SeenPawn;
-		MoveToTarget(CombatTarget);
-		UE_LOG(LogTemp, Warning, TEXT("Character Spotted! Enemy Chasing..."));
+
+		if (EnemyState != EEnemyState::EES_Attacking) 
+		{
+			EnemyState = EEnemyState::EES_Chasing;
+			MoveToTarget(CombatTarget);
+			UE_LOG(LogTemp, Warning, TEXT("Character Spotted! Chasing."));
+		}
 	}
 }
 
@@ -206,10 +210,28 @@ void AEnemy::CheckCombatTarget()
 		{
 			HealthBarWidget->SetVisibility(false);
 		}
+
+		//LOS Enemy / Out of Range
 		EnemyState = EEnemyState::EES_Patrolling;
 		GetCharacterMovement()->MaxWalkSpeed = 125.f;
 		MoveToTarget(PatrolTarget);
+		UE_LOG(LogTemp, Warning, TEXT("Enemy lost interest in boring Player."));
 
+	}
+	else if(!InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Chasing)
+	{
+		//Outside attack range
+		EnemyState = EEnemyState::EES_Chasing;
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		MoveToTarget(CombatTarget);
+		UE_LOG(LogTemp, Warning, TEXT("Enemy Chasing Player."));
+	}
+	else if (InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Attacking)
+	{
+		//Inside attack range
+		EnemyState = EEnemyState::EES_Attacking;
+		UE_LOG(LogTemp, Warning, TEXT("Enemy Attacking Player."));
+		//TODO: Attack Montage 
 	}
 }
 
