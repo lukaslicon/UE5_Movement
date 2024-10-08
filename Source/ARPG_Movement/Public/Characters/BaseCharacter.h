@@ -4,13 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/HitInterface.h"
+
 #include "BaseCharacter.generated.h"
 
 class AWeapon;
 class UAnimMontage;
+class UAttributeComponent;
 
 UCLASS()
-class ARPG_MOVEMENT_API ABaseCharacter : public ACharacter
+class ARPG_MOVEMENT_API ABaseCharacter : public ACharacter, public IHitInterface
 {
 	GENERATED_BODY()
 
@@ -27,11 +30,12 @@ protected:
 	virtual void LightAttack();
 	virtual void HeavyAttack();
 	virtual void Die();
+	virtual void GetHit(const FVector& ImpactPoint);
 
 	/**
 	* Play Montage functions
 	*/
-
+	void DirectionalHitReact(const FVector& ImpactPoint);
 	void PlayHitReactMontage(const FName& SectionName);
 	virtual void PlayLightAttackMontage();
 	virtual void PlayHeavyAttackMontage();
@@ -53,12 +57,24 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HeavyAttackMontage;
 
-	/**
-	* Animation montages
-	*/
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* DeathMontage;
+
+	/*
+	* Components
+	*/
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UAttributeComponent* Attributes;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UParticleSystem* HitParticles;
 
 
 

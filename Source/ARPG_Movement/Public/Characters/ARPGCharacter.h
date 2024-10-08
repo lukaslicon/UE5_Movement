@@ -16,7 +16,7 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 class AItem;
-
+class UAnimMontage;
 
 
 UCLASS()
