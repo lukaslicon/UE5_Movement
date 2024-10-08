@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "InputActionValue.h"
 #include "CharacterTypes.h"
 
@@ -17,11 +17,10 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
-class AWeapon;
 
 
 UCLASS()
-class ARPG_MOVEMENT_API AARPGCharacter : public ACharacter
+class ARPG_MOVEMENT_API AARPGCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -31,9 +30,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
-
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 
 protected:
 	virtual void BeginPlay() override;
@@ -71,19 +67,18 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void EKeyPressed();
 	void EquipKeyPressed();
-	void LightAttack();
-	void HeavyAttack();
 
+
+	virtual void LightAttack() override;
+	virtual void HeavyAttack() override;
 	/**
 	* Play Montage functions
 	*/
 
-	void PlayLightAttackMontage();
-	void PlayHeavyAttackMontage();
-
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd();
-	bool CanAttack();
+	virtual void PlayLightAttackMontage() override;
+	virtual void PlayHeavyAttackMontage() override;
+	virtual void AttackEnd() override;
+	virtual bool CanAttack() override;
 
 	void PlayEquipMontage(FName SectionName);
 	bool CanUnEquip();
@@ -98,13 +93,12 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void FinishEquiping();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Damage")
+	float HeavyAttackMultiplier = 2.0f;
 
 
 private:
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
-
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;
@@ -115,17 +109,8 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	AWeapon* EquippedWeapon;
-
-	/**
-	* Animation Montages
-	*/
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* AttackMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* HeavyAttackMontage;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
@@ -133,5 +118,6 @@ private:
 public: 
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
 	FORCEINLINE ECharacterState GetCharacterState() { return CharacterState; }
+
 
 };
