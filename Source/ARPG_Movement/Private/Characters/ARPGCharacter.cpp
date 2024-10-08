@@ -13,7 +13,7 @@
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
-#include "Components/BoxComponent.h"
+
 
 AARPGCharacter::AARPGCharacter()
 {
@@ -41,7 +41,6 @@ AARPGCharacter::AARPGCharacter()
 void AARPGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	Tags.Add(FName("Character"));
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
@@ -121,6 +120,7 @@ void AARPGCharacter::LightAttack()
 	{
 		PlayLightAttackMontage();
 		ActionState = EActionState::EAS_Attacking;
+		EquippedWeapon->SetAttackDamage(EquippedWeapon->GetDamage());
 	}
 	
 }
@@ -131,6 +131,8 @@ void AARPGCharacter::HeavyAttack()
 	{
 		PlayHeavyAttackMontage();
 		ActionState = EActionState::EAS_Attacking;
+		EquippedWeapon->SetAttackDamage(EquippedWeapon->GetDamage() * HeavyAttackMultiplier);
+
 	}
 }
 
@@ -250,17 +252,6 @@ void AARPGCharacter::Jump()
 	if (ActionState != EActionState::EAS_Unoccupied) return;
 	Super::Jump();
 }
-
-void AARPGCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
-{
-	if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) 
-	{
-		EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
-		EquippedWeapon->IgnoreActors.Empty();
-	}
-}
-
-
 
 void AARPGCharacter::Tick(float DeltaTime)
 {

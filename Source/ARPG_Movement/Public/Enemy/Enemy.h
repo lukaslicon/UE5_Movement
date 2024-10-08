@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "Characters/BaseCharacter.h"
 #include "Interfaces/HitInterface.h"
 #include "Characters/CharacterTypes.h"
 
@@ -17,7 +17,7 @@ class UHealthBarComponent;
 class UPawnSensingComponent;
 
 UCLASS()
-class ARPG_MOVEMENT_API AEnemy : public ACharacter, public IHitInterface
+class ARPG_MOVEMENT_API AEnemy : public ABaseCharacter, public IHitInterface
 {
 	GENERATED_BODY()
 
@@ -48,12 +48,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
-
-	/**
-	* Animation montages
-	*/
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* HitReactMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* DeathMontage;
@@ -108,7 +102,7 @@ private:
 protected:
 	virtual void BeginPlay() override;
 
-	void Die();
+	virtual void Die() override;
 	bool InTargetRange(AActor* Target, double Radius);
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
@@ -116,10 +110,7 @@ protected:
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);
 
-	/**
-	* Play montage functions
-	*/
-	void PlayHitReactMontage(const FName& SectionName);
+
 
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;

@@ -24,6 +24,9 @@ AWeapon::AWeapon()
 	BoxTraceEnd = CreateDefaultSubobject<USceneComponent>(TEXT("Box Trace End"));
 	BoxTraceEnd->SetupAttachment(GetRootComponent());
 
+	//initialize attackdamage
+	AttackDamage = Damage;
+
 }
 
 void AWeapon::BeginPlay()
@@ -100,7 +103,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	{
 		UGameplayStatics::ApplyDamage(
 			BoxHit.GetActor(),
-			Damage,
+			AttackDamage,
 			GetInstigator()->GetController(),
 			this,
 			UDamageType::StaticClass()

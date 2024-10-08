@@ -53,7 +53,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	float Damage = 20.f;
 
+	/** Damage used during the current attack */
+	float AttackDamage;
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }
+
+	//Accessors for damage
+	FORCEINLINE float GetDamage() const { return Damage; }
+	FORCEINLINE void SetAttackDamage(float NewDamage) { AttackDamage = NewDamage; }
 };
