@@ -132,7 +132,7 @@ void AEnemy::MoveToTarget(AActor* Target)
 	if (EnemyController == nullptr || Target == nullptr) return;
 	FAIMoveRequest MoveRequest;
 	MoveRequest.SetGoalActor(Target);
-	MoveRequest.SetAcceptanceRadius(15.f);
+	MoveRequest.SetAcceptanceRadius(90.f);
 	EnemyController->MoveTo(MoveRequest);
 }
 
@@ -228,8 +228,8 @@ void AEnemy::CheckCombatTarget()
 	{
 		//Inside attack range
 		EnemyState = EEnemyState::EES_Attacking;
-
 		//TODO: Attack Montage 
+		LightAttack();
 	}
 }
 
@@ -293,5 +293,43 @@ void AEnemy::Destroyed()
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->Destroy();
+	}
+}
+
+void AEnemy::LightAttack()
+{
+	Super::LightAttack();
+	PlayLightAttackMontage();
+}
+
+void AEnemy::PlayLightAttackMontage()
+{
+	Super::PlayLightAttackMontage();
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && AttackMontage)
+	{
+		AnimInstance->Montage_Play(AttackMontage);
+		int32 Selection = FMath::RandRange(0, 3);
+		FName SectionName = FName();
+
+		switch (Selection)
+		{
+		case 0:
+			SectionName = FName("Combo3");
+			break;
+		case 1:
+			SectionName = FName("Combo3");
+			break;
+		case 2:
+			SectionName = FName("Combo3");
+			break;
+		case 3:
+			SectionName = FName("Combo3");
+			break;
+		default:
+			break;
+		}
+		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 	}
 }

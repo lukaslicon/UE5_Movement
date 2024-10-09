@@ -28,6 +28,13 @@ public:
 	virtual void GetHit(const FVector& ImpactPoint) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void Destroyed() override;
+	
+	/*
+	* Attacks
+	*/
+
+	virtual void LightAttack() override;
+	virtual void PlayLightAttackMontage() override;
 
 private:
 
@@ -54,7 +61,7 @@ private:
 	double CombatRadius = 1000.f;
 
 	UPROPERTY(EditAnywhere)
-	double AttackRadius = 150.f;
+	double AttackRadius = 300.f;
 
 
 	/**

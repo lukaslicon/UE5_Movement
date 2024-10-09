@@ -176,6 +176,7 @@ void AARPGCharacter::Equip()
 
 void AARPGCharacter::PlayLightAttackMontage()
 {
+	Super::PlayLightAttackMontage();
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && AttackMontage)
 	{
@@ -203,6 +204,7 @@ void AARPGCharacter::PlayLightAttackMontage()
 
 void AARPGCharacter::PlayHeavyAttackMontage()
 {
+	Super::PlayHeavyAttackMontage();
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && HeavyAttackMontage)
 	{

@@ -103,10 +103,12 @@ void ABaseCharacter::PlayHitReactMontage(const FName& SectionName)
 
 void ABaseCharacter::PlayLightAttackMontage()
 {
+
 }
 
 void ABaseCharacter::PlayHeavyAttackMontage()
 {
+
 }
 
 bool ABaseCharacter::CanAttack()
