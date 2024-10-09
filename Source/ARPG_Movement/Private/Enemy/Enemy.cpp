@@ -316,16 +316,16 @@ void AEnemy::PlayLightAttackMontage()
 		switch (Selection)
 		{
 		case 0:
-			SectionName = FName("Combo3");
+			SectionName = FName("Combo2");
 			break;
 		case 1:
 			SectionName = FName("Combo3");
 			break;
 		case 2:
-			SectionName = FName("Combo3");
+			SectionName = FName("DownSlash");
 			break;
 		case 3:
-			SectionName = FName("Combo3");
+			SectionName = FName("HoriSlash");
 			break;
 		default:
 			break;
