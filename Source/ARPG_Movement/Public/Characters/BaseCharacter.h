@@ -27,19 +27,25 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void LightAttack();
-	virtual void HeavyAttack();
+	/* States */
 	virtual void Die();
-	virtual void GetHit(const FVector& ImpactPoint);
+	bool IsAlive();
+	virtual void HandleDamage(float DamageAmount);
 
-	/**
-	* Play Montage functions
-	*/
+	/* Sounds */
+	void PlayHitSound(const FVector& ImpactPoint);
+	void SpawnHitParticles(const FVector& ImpactPoint);
+
+	/* Hits */
 	void DirectionalHitReact(const FVector& ImpactPoint);
 	void PlayHitReactMontage(const FName& SectionName);
+	virtual void GetHit(const FVector& ImpactPoint);
+
+	/* Attacks */
 	virtual void PlayLightAttackMontage();
 	virtual void PlayHeavyAttackMontage();
-
+	virtual void LightAttack();
+	virtual void HeavyAttack();
 	virtual bool CanAttack();
 
 	UFUNCTION(BlueprintCallable)
@@ -48,9 +54,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AWeapon* EquippedWeapon;
 
-	/**
-	* Animation Montages
-	*/
+	/* Animation Montages */
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
 
@@ -63,13 +67,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* DeathMontage;
 
-	/*
-	* Components
-	*/
+	/* Components */
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UAttributeComponent* Attributes;
 
+private:
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* HitSound;
 

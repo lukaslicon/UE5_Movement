@@ -24,7 +24,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void CheckPatrolTarget();
 	void CheckCombatTarget();
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetHit(const FVector& ImpactPoint) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void Destroyed() override;
@@ -78,12 +77,6 @@ private:
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;
 
-	UPROPERTY(EditAnywhere)
-	double PatrolRadius = 200.f;
-
-	UPROPERTY(EditAnywhere)
-	float ChasingSpeed = 300.f;
-
 	FTimerHandle PatrolTimer;
 	void PatrolTimerFinished();
 
@@ -92,6 +85,29 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float PatrollingSpeed = 125.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	double PatrolRadius = 200.f;
+
+	/* Combat */
+	void StartAttackTimer();
+	void ClearAttackTimer();
+
+	void Tester();
+
+	FTimerHandle AttackTimer;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float AttackMin = .5f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float AttackMax = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ChasingSpeed = 300.f;
 
 	/* AI Behavior */
 	void HideHealthBar();
@@ -104,21 +120,20 @@ private:
 	bool IsInsideAttackRadius();
 	bool IsChasing();
 	bool IsAttacking();
+	bool IsDead();
 
-	/* Combat */
-	FTimerHandle AttackTimer;
-
-	UPROPERTY(EditAnywhere, Category = Combat)
-	float PatrollingSpeed = 125.f;
+	bool IsEngaged();
+	void ClearPatrolTimer();
 
 
 protected:
 	virtual void BeginPlay() override;
-
+	virtual void HandleDamage(float DamageAmount) override;
 	virtual void Die() override;
 	bool InTargetRange(AActor* Target, double Radius);
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
+	virtual bool CanAttack() override;
 
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);
