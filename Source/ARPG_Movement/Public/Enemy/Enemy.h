@@ -82,7 +82,7 @@ private:
 	double PatrolRadius = 200.f;
 
 	UPROPERTY(EditAnywhere)
-	double ChasingSpeed = 300.f;
+	float ChasingSpeed = 300.f;
 
 	FTimerHandle PatrolTimer;
 	void PatrolTimerFinished();
@@ -93,7 +93,24 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
 
-	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+	/* AI Behavior */
+	void HideHealthBar();
+	void ShowHealthBar();
+	void LoseInterest();
+	void StartPatrolling();
+	void ChaseTarget();
+	bool IsOutsideCombatRadius();
+	bool IsOutsideAttackRadius();
+	bool IsInsideAttackRadius();
+	bool IsChasing();
+	bool IsAttacking();
+
+	/* Combat */
+	FTimerHandle AttackTimer;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float PatrollingSpeed = 125.f;
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -106,10 +123,13 @@ protected:
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);
 
-
-
 	UPROPERTY(BlueprintReadOnly)
-	EDeathPose DeathPose = EDeathPose::EDP_Alive;
+	EDeathPose DeathPose;
+
+	UPROPERTY(BluePrintReadOnly)
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+
+
 public:
 
 };
